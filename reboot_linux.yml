@@ -2,8 +2,8 @@
 - name: Reboot Linux systems
   hosts: Linux # Specify the appropriate group or hosts
   become: yes  # Ensure privilege escalation for rebooting
-  #vars_files:
-  #  - vault.yml
+  vars_files:
+    - vault.yml
   gather_facts: no
   tasks:
 
