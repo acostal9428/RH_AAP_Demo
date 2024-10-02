@@ -2,8 +2,8 @@
 - name: Gather facts and save to the control node
   hosts: Linux
   become: yes
-  vars_files:
-          - vault.yml
+  # vars_files:
+  #         - vault.yml
   gather_facts: yes
   tasks:
 

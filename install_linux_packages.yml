@@ -2,8 +2,8 @@
 - name: Install software packages on Linux systems
   hosts: all
   become: yes  # Ensure privilege escalation
-  vars_files:
-    - vault.yml
+  #vars_files:
+  #  - vault.yml
   tasks:
 
     # Task for RedHat-based systems (RHEL, CentOS, Fedora)
