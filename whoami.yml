@@ -1,0 +1,15 @@
+---
+- name: Check what user I become during playbook execution
+  hosts: Linux
+  become: yes  # Enable privilege escalation
+  vars_files:
+    - vault.yml
+  tasks:
+    - name: Display the current user
+      ansible.builtin.command:
+        cmd: whoami
+      register: current_user
+
+    - name: Print the user
+      ansible.builtin.debug:
+        msg: "I am {{ current_user.stdout }}"

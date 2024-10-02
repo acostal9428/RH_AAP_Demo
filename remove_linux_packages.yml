@@ -1,0 +1,31 @@
+---
+- name: Remove software packages on Linux systems
+  hosts: Linux
+  become: yes  # Ensure privilege escalation
+  vars_files:
+    - vault.yml
+  tasks:
+
+    # Task for RedHat-based systems (RHEL, CentOS, Fedora)
+    - name: Remove software packages on RedHat-based systems
+      ansible.builtin.dnf:
+        name:
+          - libreoffice*
+          - gimp
+          - gvim  # GVim package
+          - tigervnc-server  # VNC package
+        state: absent
+      when: ansible_facts['os_family'] == "RedHat"
+
+    # Task for Debian-based systems (Ubuntu, Debian)
+    - name: Remove software packages on Debian-based systems
+      ansible.builtin.apt:
+        name:
+          - gimp
+          - vim-gtk  # GVim package
+          - libreoffice*  # LibreOffice is the equivalent of OpenOffice
+          - vnc4server  # VNC package
+        state: absent
+        update_cache: yes  # Ensures the package cache is updated
+      when: ansible_facts['os_family'] == "Debian"
+

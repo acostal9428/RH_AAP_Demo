@@ -1,0 +1,32 @@
+---
+- name: Gather facts and save to the control node
+  hosts: Linux
+  become: yes
+  vars_files:
+          - vault.yml
+  gather_facts: yes
+  tasks:
+
+    # Create a directory on the control node to store the facts file
+    - name: Create directory on control node to store the facts file
+      ansible.builtin.file:
+        path: /tmp/host_info
+        state: directory
+        mode: '0755'
+      delegate_to: localhost  # Run this task on the control node
+      run_once: true  # Only needs to run once to create the directory
+
+    # Write the facts to a JSON file on the control node
+    - name: Write facts to a JSON file on the control node
+      ansible.builtin.copy:
+        content: "{{ ansible_facts | to_nice_json }}"
+        dest: /tmp/host_info/{{ inventory_hostname }}_facts.json
+        mode: '0644'
+      delegate_to: localhost  # Run this task on the control node
+
+    # Print the location of the facts file
+    - name: Print the location of the facts file on the control node
+      ansible.builtin.debug:
+        msg: "Facts for {{ inventory_hostname }} written to /tmp/host_info/{{ inventory_hostname }}_facts.json"
+      delegate_to: localhost  # Ensure this message refers to the control node location
+

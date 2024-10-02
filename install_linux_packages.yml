@@ -1,0 +1,31 @@
+---
+- name: Install software packages on Linux systems
+  hosts: all
+  become: yes  # Ensure privilege escalation
+  vars_files:
+    - vault.yml
+  tasks:
+
+    # Task for RedHat-based systems (RHEL, CentOS, Fedora)
+    - name: Install software packages on RedHat-based systems
+      ansible.builtin.dnf:
+        name:
+          - gimp
+          - gvim  # GVim package
+          - libreoffice
+          - tigervnc-server  # VNC package
+        state: present
+      when: ansible_facts['os_family'] == "RedHat"
+
+    # Task for Debian-based systems (Ubuntu, Debian)
+    - name: Install software packages on Debian-based systems
+      ansible.builtin.apt:
+        name:
+          - gimp
+          - vim-gtk  # GVim package
+          - libreoffice  # LibreOffice is the equivalent of OpenOffice
+          - vnc4server  # VNC package
+        state: present
+        update_cache: yes  # Ensures the package cache is updated
+      when: ansible_facts['os_family'] == "Debian"
+

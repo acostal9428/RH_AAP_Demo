@@ -1,0 +1,10 @@
+---
+- name: Reboot Windows machines
+  hosts: windows
+  tasks:
+    - name: Reboot the Windows machine
+      ansible.windows.win_reboot:
+      # win_reboot:
+      #   reboot_timeout: 600  # Optional, sets the timeout in seconds
+      #   msg: "Rebooting the system via Ansible"  # Optional, sets a message shown on the screen before reboot
+
