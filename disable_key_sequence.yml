@@ -1,0 +1,59 @@
+---
+- name: Disable Ctrl+Alt+Delete Key Sequence
+  hosts: Linux
+  become: yes  # Ensure privilege escalation
+  vars_files:
+    - vault.yml
+  tasks:
+
+    # Task for RedHat Version 8
+    - name: Create directory for dconf settings if it doesn't exist
+      ansible.builtin.file:
+        path: /etc/dconf/db/local.d
+        state: directory
+        mode: '0755'
+      when: ansible_facts['distribution_major_version'] == "8"
+
+    - name: Create dconf configuration file to disable Ctrl+Alt+Delete globally
+      ansible.builtin.copy:
+        dest: /etc/dconf/db/local.d/00-disable-CAD
+        content: |
+          [org/gnome/settings-daemon/plugins/media-keys]
+          logout=''
+      when: ansible_facts['distribution_major_version'] == "8"
+
+    - name: Update dconf database
+      ansible.builtin.command:
+              cmd: dconf update
+      when: ansible_facts['distribution_major_version'] == "8"
+
+    - name: Notify user of completion
+      ansible.builtin.debug:
+        msg: "Ctrl+Alt+Delete key combination has been disabled globally for RHEL 8."
+      when: ansible_facts['distribution_major_version'] == "8"
+ 
+    # Task for RedHat Version 9
+    - name: Create directory for dconf settings if it doesn't exist
+      ansible.builtin.file:
+        path: /etc/dconf/db/local.d
+        state: directory
+        mode: '0755'
+      when: ansible_facts['distribution_major_version'] == "9"
+
+    - name: Create dconf configuration file to disable Ctrl+Alt+Delete globally
+      ansible.builtin.copy:
+        dest: /etc/dconf/db/local.d/00-disable-CAD
+        content: |
+          [org/gnome/settings-daemon/plugins/media-keys]
+          logout=@as []
+      when: ansible_facts['distribution_major_version'] == "9"
+
+    - name: Update dconf database
+      ansible.builtin.command:
+              cmd: dconf update
+      when: ansible_facts['distribution_major_version'] == "9"
+
+    - name: Notify user of completion
+      ansible.builtin.debug:
+        msg: "Ctrl+Alt+Delete key combination has been disabled globally for RHEL 9."
+      when: ansible_facts['distribution_major_version'] == "9"

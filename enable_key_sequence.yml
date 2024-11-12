@@ -1,0 +1,30 @@
+---
+- name: Enable Ctrl+Alt+Delete Key Sequence
+  hosts: Linux
+  become: yes  # Ensure privilege escalation
+  vars_files:
+    - vault.yml
+  tasks:
+
+    # Task for RedHat Version 8
+    - name: Check if the configuration file exists
+      ansible.builtin.stat:
+        path: /etc/dconf/db/local.d/00-disable-CAD
+      register: config_file_status
+
+    - name: Remove the configuration file if it exists
+      ansible.builtin.file:
+        path: /etc/dconf/db/local.d/00-disable-CAD
+        state: absent
+      when: config_file_status.stat.exists
+
+    - name: Update dconf database
+      ansible.builtin.command:
+        cmd: dconf update
+      when: config_file_status.stat.exists
+
+    - name: Notify user of removal completion
+      ansible.builtin.debug:
+        msg: "The Ctrl+Alt+Delete key combination has been enabled globally for RHEL 8 and 9."
+      when: config_file_status.stat.exists
+
