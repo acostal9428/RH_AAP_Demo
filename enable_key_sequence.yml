@@ -2,8 +2,8 @@
 - name: Enable Ctrl+Alt+Delete Key Sequence
   hosts: Linux
   become: yes  # Ensure privilege escalation
-  vars_files:
-    - vault.yml
+  #  vars_files:
+  #    - vault.yml
   tasks:
 
     # Task for RedHat Version 8
